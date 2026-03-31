@@ -1,84 +1,593 @@
 <!DOCTYPE html>
-<html lang="en">
+<html lang="en" data-theme="dark">
 <head>
-    <meta charset="UTF-8">
-    <title>Ahmed Mustafa | Systems Architect</title>
-    <link rel="stylesheet" href="style.css">
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Code Rendering Studio | Ahmed Mustafa</title>
+<link href="https://fonts.googleapis.com/css2?family=Space+Mono:wght@400;700&family=Syne:wght@400;600;700;800&display=swap" rel="stylesheet">
+<style>
+  :root {
+    --bg: #080810;
+    --surface: rgba(255,255,255,0.03);
+    --surface-hover: rgba(255,255,255,0.07);
+    --border: rgba(255,255,255,0.08);
+    --text: #f0f0f0;
+    --text-muted: rgba(255,255,255,0.45);
+    --accent: #00ffcc;
+    --accent2: #7b61ff;
+    --accent3: #ff6b6b;
+    --tag-bg: rgba(0,255,204,0.08);
+    --tag-color: #00ffcc;
+    --shadow: 0 8px 32px rgba(0,0,0,0.4);
+    --radius: 18px;
+    --transition: 0.4s cubic-bezier(0.16,1,0.3,1);
+  }
+  [data-theme="light"] {
+    --bg: #f4f4f0;
+    --surface: rgba(255,255,255,0.8);
+    --surface-hover: rgba(255,255,255,0.95);
+    --border: rgba(0,0,0,0.08);
+    --text: #111118;
+    --text-muted: rgba(0,0,0,0.45);
+    --accent: #0066ff;
+    --accent2: #7b61ff;
+    --accent3: #ff3b3b;
+    --tag-bg: rgba(0,102,255,0.08);
+    --tag-color: #0066ff;
+    --shadow: 0 8px 32px rgba(0,0,0,0.12);
+  }
+
+  *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+
+  body {
+    background: var(--bg);
+    color: var(--text);
+    font-family: 'Syne', sans-serif;
+    min-height: 100vh;
+    padding: 24px;
+    transition: background var(--transition), color var(--transition);
+    overflow-x: hidden;
+  }
+
+  [data-theme="dark"] body::before {
+    content: '';
+    position: fixed;
+    inset: 0;
+    background:
+      radial-gradient(ellipse 600px 400px at 20% 20%, rgba(0,255,204,0.04) 0%, transparent 70%),
+      radial-gradient(ellipse 500px 400px at 80% 80%, rgba(123,97,255,0.05) 0%, transparent 70%);
+    pointer-events: none;
+    z-index: 0;
+  }
+
+  .wrapper {
+    max-width: 1100px;
+    margin: 0 auto;
+    position: relative;
+    z-index: 1;
+  }
+
+  /* TOP NAV */
+  nav {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    margin-bottom: 32px;
+    padding: 0 4px;
+  }
+  .logo {
+    font-family: 'Space Mono', monospace;
+    font-size: 0.85rem;
+    color: var(--accent);
+    letter-spacing: 0.1em;
+  }
+  .logo span { color: var(--text-muted); }
+  .nav-right { display: flex; align-items: center; gap: 12px; }
+  .theme-toggle {
+    background: var(--surface);
+    border: 1px solid var(--border);
+    border-radius: 50px;
+    padding: 8px 16px;
+    cursor: pointer;
+    font-family: 'Space Mono', monospace;
+    font-size: 0.75rem;
+    color: var(--text-muted);
+    transition: all 0.3s;
+    display: flex;
+    align-items: center;
+    gap: 6px;
+  }
+  .theme-toggle:hover { border-color: var(--accent); color: var(--accent); }
+  .status-dot {
+    width: 8px; height: 8px;
+    border-radius: 50%;
+    background: var(--accent);
+    box-shadow: 0 0 8px var(--accent);
+    animation: pulse 2s infinite;
+  }
+  @keyframes pulse { 0%,100% { opacity: 1; } 50% { opacity: 0.4; } }
+
+  /* BENTO GRID */
+  .bento {
+    display: grid;
+    grid-template-columns: repeat(12, 1fr);
+    gap: 14px;
+  }
+
+  .card {
+    background: var(--surface);
+    border: 1px solid var(--border);
+    border-radius: var(--radius);
+    padding: 24px;
+    backdrop-filter: blur(12px);
+    transition: background var(--transition), border-color 0.3s, transform 0.3s, box-shadow 0.3s;
+    animation: fadeUp 0.6s both;
+    position: relative;
+    overflow: hidden;
+  }
+  .card:hover {
+    background: var(--surface-hover);
+    border-color: rgba(255,255,255,0.15);
+    transform: translateY(-2px);
+    box-shadow: var(--shadow);
+  }
+  [data-theme="light"] .card:hover { border-color: rgba(0,0,0,0.15); }
+
+  @keyframes fadeUp {
+    from { opacity: 0; transform: translateY(20px); }
+    to { opacity: 1; transform: translateY(0); }
+  }
+  .card:nth-child(1) { animation-delay: 0.05s; }
+  .card:nth-child(2) { animation-delay: 0.1s; }
+  .card:nth-child(3) { animation-delay: 0.15s; }
+  .card:nth-child(4) { animation-delay: 0.2s; }
+  .card:nth-child(5) { animation-delay: 0.25s; }
+  .card:nth-child(6) { animation-delay: 0.3s; }
+  .card:nth-child(7) { animation-delay: 0.35s; }
+  .card:nth-child(8) { animation-delay: 0.4s; }
+
+  .c-12 { grid-column: span 12; }
+  .c-8  { grid-column: span 8; }
+  .c-7  { grid-column: span 7; }
+  .c-6  { grid-column: span 6; }
+  .c-5  { grid-column: span 5; }
+  .c-4  { grid-column: span 4; }
+  .c-3  { grid-column: span 3; }
+
+  /* TAGS */
+  .tag {
+    display: inline-block;
+    font-family: 'Space Mono', monospace;
+    font-size: 0.65rem;
+    letter-spacing: 0.12em;
+    text-transform: uppercase;
+    color: var(--tag-color);
+    background: var(--tag-bg);
+    padding: 4px 10px;
+    border-radius: 4px;
+    margin-bottom: 14px;
+  }
+
+  /* HERO CARD */
+  .hero-card {
+    background: linear-gradient(135deg, rgba(0,255,204,0.06) 0%, rgba(123,97,255,0.06) 100%);
+    border-color: rgba(0,255,204,0.15);
+  }
+  .hero-name {
+    font-size: clamp(2rem, 5vw, 3.2rem);
+    font-weight: 800;
+    line-height: 1.05;
+    letter-spacing: -0.02em;
+    margin-bottom: 10px;
+  }
+  .hero-name .accent { color: var(--accent); }
+  .hero-subtitle {
+    font-family: 'Space Mono', monospace;
+    font-size: 0.8rem;
+    color: var(--text-muted);
+    letter-spacing: 0.06em;
+    margin-bottom: 20px;
+  }
+  .hero-desc {
+    font-size: 0.95rem;
+    color: var(--text-muted);
+    line-height: 1.7;
+    max-width: 480px;
+  }
+  .hero-badges {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 8px;
+    margin-top: 20px;
+  }
+  .badge {
+    font-family: 'Space Mono', monospace;
+    font-size: 0.7rem;
+    padding: 5px 12px;
+    border-radius: 50px;
+    border: 1px solid var(--border);
+    color: var(--text-muted);
+    transition: all 0.2s;
+  }
+  .badge:hover { border-color: var(--accent); color: var(--accent); }
+
+  /* STATS CARD */
+  .stat-number {
+    font-size: 2.8rem;
+    font-weight: 800;
+    color: var(--accent);
+    line-height: 1;
+    font-family: 'Space Mono', monospace;
+  }
+  .stat-label {
+    font-size: 0.78rem;
+    color: var(--text-muted);
+    margin-top: 6px;
+    letter-spacing: 0.05em;
+  }
+
+  /* SKILLS */
+  .skill-grid {
+    display: flex;
+    flex-direction: column;
+    gap: 12px;
+    margin-top: 8px;
+  }
+  .skill-row { display: flex; flex-direction: column; gap: 5px; }
+  .skill-top { display: flex; justify-content: space-between; align-items: center; }
+  .skill-name { font-size: 0.82rem; font-weight: 600; }
+  .skill-pct { font-family: 'Space Mono', monospace; font-size: 0.72rem; color: var(--text-muted); }
+  .skill-bar {
+    height: 4px;
+    background: var(--border);
+    border-radius: 2px;
+    overflow: hidden;
+  }
+  .skill-fill {
+    height: 100%;
+    border-radius: 2px;
+    background: linear-gradient(90deg, var(--accent), var(--accent2));
+    transform-origin: left;
+    animation: fillBar 1.2s both;
+  }
+  @keyframes fillBar { from { transform: scaleX(0); } to { transform: scaleX(1); } }
+
+  /* STACK PILLS */
+  .pill-grid { display: flex; flex-wrap: wrap; gap: 8px; margin-top: 12px; }
+  .pill {
+    font-family: 'Space Mono', monospace;
+    font-size: 0.72rem;
+    padding: 5px 12px;
+    border-radius: 6px;
+    background: var(--surface);
+    border: 1px solid var(--border);
+    color: var(--text-muted);
+    transition: all 0.2s;
+  }
+  .pill:hover { background: var(--tag-bg); color: var(--tag-color); border-color: var(--accent); }
+  .pill.highlight { background: var(--tag-bg); color: var(--tag-color); border-color: rgba(0,255,204,0.2); }
+
+  /* PROJECTS */
+  .project-list { display: flex; flex-direction: column; gap: 14px; margin-top: 8px; }
+  .project-item {
+    padding: 14px;
+    border-radius: 12px;
+    border: 1px solid var(--border);
+    background: var(--surface);
+    transition: all 0.25s;
+    cursor: pointer;
+  }
+  .project-item:hover { border-color: var(--accent2); background: var(--surface-hover); }
+  .project-top { display: flex; justify-content: space-between; align-items: flex-start; gap: 8px; }
+  .project-name { font-size: 0.9rem; font-weight: 700; }
+  .project-stack {
+    font-family: 'Space Mono', monospace;
+    font-size: 0.62rem;
+    color: var(--accent2);
+    background: rgba(123,97,255,0.08);
+    padding: 3px 8px;
+    border-radius: 4px;
+    white-space: nowrap;
+  }
+  .project-desc { font-size: 0.78rem; color: var(--text-muted); margin-top: 6px; line-height: 1.6; }
+
+  /* SERVICES */
+  .service-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 10px; margin-top: 12px; }
+  .service-item {
+    padding: 14px;
+    border-radius: 12px;
+    border: 1px solid var(--border);
+    background: var(--surface);
+    transition: all 0.25s;
+  }
+  .service-item:hover { border-color: var(--accent3); }
+  .service-icon { font-size: 1.4rem; margin-bottom: 8px; }
+  .service-name { font-size: 0.82rem; font-weight: 700; margin-bottom: 4px; }
+  .service-desc { font-size: 0.72rem; color: var(--text-muted); line-height: 1.5; }
+
+  /* CONTACT FORM */
+  .form-group { margin-bottom: 12px; }
+  .form-group label {
+    display: block;
+    font-family: 'Space Mono', monospace;
+    font-size: 0.68rem;
+    color: var(--text-muted);
+    letter-spacing: 0.08em;
+    margin-bottom: 6px;
+    text-transform: uppercase;
+  }
+  .form-group input,
+  .form-group textarea {
+    width: 100%;
+    background: var(--surface);
+    border: 1px solid var(--border);
+    border-radius: 10px;
+    padding: 10px 14px;
+    color: var(--text);
+    font-family: 'Syne', sans-serif;
+    font-size: 0.85rem;
+    transition: border-color 0.2s;
+    outline: none;
+    resize: none;
+  }
+  .form-group input:focus,
+  .form-group textarea:focus { border-color: var(--accent); }
+  .submit-btn {
+    width: 100%;
+    padding: 12px;
+    background: var(--accent);
+    color: #000;
+    border: none;
+    border-radius: 10px;
+    font-family: 'Space Mono', monospace;
+    font-size: 0.8rem;
+    font-weight: 700;
+    letter-spacing: 0.08em;
+    cursor: pointer;
+    transition: all 0.2s;
+    margin-top: 4px;
+  }
+  .submit-btn:hover { opacity: 0.85; transform: translateY(-1px); }
+
+  /* CLOUD CARD */
+  .cloud-logos { display: flex; flex-direction: column; gap: 10px; margin-top: 12px; }
+  .cloud-item {
+    display: flex;
+    align-items: center;
+    gap: 12px;
+    padding: 10px 14px;
+    border-radius: 10px;
+    border: 1px solid var(--border);
+    background: var(--surface);
+    font-size: 0.82rem;
+    font-weight: 600;
+    transition: all 0.2s;
+  }
+  .cloud-item:hover { border-color: var(--accent); }
+  .cloud-icon { font-size: 1.2rem; }
+  .cloud-detail { font-size: 0.7rem; color: var(--text-muted); font-weight: 400; margin-top: 2px; font-family: 'Space Mono', monospace; }
+
+  /* AVAILABILITY */
+  .avail-indicator {
+    display: flex;
+    align-items: center;
+    gap: 10px;
+    margin-top: 12px;
+    margin-bottom: 16px;
+  }
+  .avail-dot {
+    width: 10px; height: 10px;
+    border-radius: 50%;
+    background: #00ff88;
+    box-shadow: 0 0 10px #00ff88;
+    animation: pulse 2s infinite;
+  }
+  .avail-text { font-size: 0.85rem; font-weight: 600; }
+  .avail-sub { font-size: 0.75rem; color: var(--text-muted); margin-top: 4px; font-family: 'Space Mono', monospace; }
+  .contact-links { display: flex; flex-direction: column; gap: 8px; margin-top: 14px; }
+  .contact-link {
+    display: flex;
+    align-items: center;
+    gap: 10px;
+    padding: 9px 14px;
+    border-radius: 10px;
+    border: 1px solid var(--border);
+    background: var(--surface);
+    font-size: 0.8rem;
+    color: var(--text);
+    text-decoration: none;
+    transition: all 0.2s;
+  }
+  .contact-link:hover { border-color: var(--accent); color: var(--accent); }
+
+  /* TOAST */
+  .toast {
+    position: fixed;
+    bottom: 28px;
+    right: 28px;
+    background: var(--surface);
+    border: 1px solid var(--accent);
+    border-radius: 12px;
+    padding: 12px 20px;
+    font-family: 'Space Mono', monospace;
+    font-size: 0.78rem;
+    color: var(--accent);
+    opacity: 0;
+    transform: translateY(12px);
+    transition: all 0.35s;
+    pointer-events: none;
+    z-index: 999;
+    backdrop-filter: blur(12px);
+  }
+  .toast.show { opacity: 1; transform: translateY(0); }
+
+  /* SECTION DIVIDER */
+  .section-title {
+    font-size: 1.3rem;
+    font-weight: 800;
+    letter-spacing: -0.01em;
+    margin-bottom: 4px;
+  }
+  .section-sub {
+    font-size: 0.78rem;
+    color: var(--text-muted);
+    font-family: 'Space Mono', monospace;
+  }
+
+  @media (max-width: 768px) {
+    .c-8, .c-7, .c-6, .c-5, .c-4, .c-3 { grid-column: span 12; }
+    body { padding: 14px; }
+  }
+</style>
 </head>
 <body>
 
-<main class="bento-container">
-    <h1 class="rainbow-header">Ahmed Mustafa</h1>
+<div class="toast" id="toast">✓ Message sent via email client</div>
 
-    <div class="main-bento-grid">
-        <div class="card glass col-2">
-            <span class="tag">Logic.Core</span>
-            <h3>Stack Intelligence</h3>
-            <div class="pill-container">
-                <span class="pill">Python</span><span class="pill">C#</span><span class="pill">JavaScript</span>
-                <span class="pill">SQL</span><span class="pill">HTML</span><span class="pill">CSS</span>
-            </div>
-        </div>
-
-        <div class="card glass col-2">
-            <span class="tag">Environment</span>
-            <h3>Integrated IDEs</h3>
-            <div class="pill-container">
-                <span class="pill">Unity</span><span class="pill">Xcode</span><span class="pill">PyCharm</span><span class="pill">Docker</span>
-            </div>
-        </div>
-
-        <div class="card glass col-4">
-            <span class="tag">Availability.System</span>
-            <div class="calendar-controls">
-                <button id="prev-month" class="nav-btn">◂</button>
-                <h3 id="month-display">Initializing...</h3>
-                <button id="next-month" class="nav-btn">▸</button>
-            </div>
-
-            <div class="calendar-inner-wrapper">
-                <div class="calendar-header-days">
-                    <span>Sun</span><span>Mon</span><span>Tue</span><span>Wed</span><span>Thu</span><span>Fri</span><span>Sat</span>
-                </div>
-                <div id="calendar-grid"></div>
-            </div>
-
-            <div class="calendar-footer">
-                <p id="selected-date-text">Buffer: 0 slots</p>
-                <button id="init-booking" class="action-btn">Initialize Appointment</button>
-            </div>
-        </div>
-
-        <div class="card glass col-4">
-            <span class="tag">Monitoring.Log</span>
-            <div id="live-log" class="log-box">> [SYSTEM]: Logic.Core Online.</div>
-        </div>
+<div class="wrapper">
+  <nav>
+    <div class="logo">CRS<span>://</span>portfolio.v2</div>
+    <div class="nav-right">
+      <div class="status-dot"></div>
+      <button class="theme-toggle" onclick="toggleTheme()" id="themeBtn">☽ Dark</button>
     </div>
-</main>
+  </nav>
 
-<div id="time-picker-modal" class="modal-overlay">
-    <div class="modal-content glass">
-        <span class="tag">Assign Time Slot</span>
-        <h3 id="picking-date-display">Date</h3>
-        <div class="time-grid">
-            <button class="time-option" data-time="09:00 AM">09:00 AM</button>
-            <button class="time-option" data-time="11:00 AM">11:00 AM</button>
-            <button class="time-option" data-time="01:00 PM">01:00 PM</button>
-            <button class="time-option" data-time="03:00 PM">03:00 PM</button>
+  <div class="bento">
+
+    <!-- HERO -->
+    <div class="card hero-card c-8">
+      <div class="tag">// About Me</div>
+      <h1 class="hero-name">Ahmed<br><span class="accent">Mustafa</span></h1>
+      <p class="hero-subtitle">Systems Architect · Automation Engineer · Cloud Developer</p>
+      <p class="hero-desc">Building intelligent automation pipelines and cloud-native systems. Specialized in Python-driven web platforms, API orchestration with Django & Flask, and infrastructure on AWS EC2 and Azure DevOps.</p>
+      <div class="hero-badges">
+        <span class="badge">Python</span>
+        <span class="badge">Django</span>
+        <span class="badge">Flask</span>
+        <span class="badge">AWS EC2</span>
+        <span class="badge">Azure DevOps</span>
+        <span class="badge">Playwright</span>
+        
+      </div>
+    </div>
+
+    <!-- STATS -->
+    <div class="card c-4" style="display:flex;flex-direction:column;justify-content:space-between;gap:20px;">
+      <div>
+        <div class="tag">// Output</div>
+        <div class="stat-number">5+</div>
+        <div class="stat-label">Years of Engineering</div>
+      </div>
+      <div>
+        <div class="stat-number" style="color:var(--accent2)">20+</div>
+        <div class="stat-label">Automation Projects</div>
+      </div>
+      <div>
+        <div class="stat-number" style="color:var(--accent3)">3</div>
+        <div class="stat-label">Cloud Platforms</div>
+      </div>
+    </div>
+
+    <!-- SKILLS -->
+    <div class="card c-4">
+      <div class="tag">// Skills & Stack</div>
+      <div class="section-title">Proficiency</div>
+      <div class="skill-grid">
+        <div class="skill-row">
+          <div class="skill-top"><span class="skill-name">Python / Automation</span><span class="skill-pct">95%</span></div>
+          <div class="skill-bar"><div class="skill-fill" style="width:95%"></div></div>
         </div>
-        <button onclick="closeModals()" class="nav-btn" style="width:100%; margin-top:10px;">Abort</button>
+        <div class="skill-row">
+          <div class="skill-top"><span class="skill-name">Django / Flask</span><span class="skill-pct">88%</span></div>
+          <div class="skill-bar"><div class="skill-fill" style="width:88%"></div></div>
+        </div>
+        <div class="skill-row">
+          <div class="skill-top"><span class="skill-name">AWS EC2 / Cloud</span><span class="skill-pct">82%</span></div>
+          <div class="skill-bar"><div class="skill-fill" style="width:82%"></div></div>
+        </div>
+        <div class="skill-row">
+          <div class="skill-top"><span class="skill-name">Azure DevOps / CI-CD</span><span class="skill-pct">78%</span></div>
+          <div class="skill-bar"><div class="skill-fill" style="width:78%"></div></div>
+        </div>
+        <div class="skill-row">
+          <div class="skill-top"><span class="skill-name">JavaScript / HTML / CSS</span><span class="skill-pct">85%</span></div>
+          <div class="skill-bar"><div class="skill-fill" style="width:85%"></div></div>
+        </div>
+      </div>
     </div>
-</div>
 
-<div id="status-modal" class="modal-overlay">
-    <div class="modal-content glass status-box">
-        <span class="tag" id="status-tag">System.Notice</span>
-        <h3 id="status-title">Status</h3>
-        <p id="status-msg" style="white-space: pre-line; margin: 15px 0;"></p>
-        <div id="status-actions" class="modal-actions"></div>
+    <!-- STACK PILLS -->
+    <div class="card c-8">
+      <div class="tag">// Full Stack</div>
+      <div class="section-title">Technology Stack</div>
+      <p class="section-sub">Languages, frameworks & tools</p>
+      <div class="pill-grid">
+        <span class="pill highlight">Python</span>
+        <span class="pill highlight">Django</span>
+        <span class="pill highlight">Flask</span>
+        <span class="pill highlight">Playwright</span>
+        <span class="pill">JavaScript</span>
+        <span class="pill">HTML5</span>
+        <span class="pill">CSS3</span>
+        <span class="pill">SQL</span>
+        <span class="pill">C#</span>
+        <span class="pill">REST APIs</span>
+        
+        <span class="pill">Git</span>
+        <span class="pill">PyCharm</span>
+        <span class="pill">Xcode</span>
+        <span class="pill">Unity</span>
+        <span class="pill">IntelliJ</span>
+      </div>
     </div>
-</div>
 
-<script src="script.js"></script>
-</body>
-</html>
+    <!-- CLOUD -->
+    <div class="card c-4">
+      <div class="tag">// Infrastructure</div>
+      <div class="section-title">Cloud & DevOps</div>
+      <div class="cloud-logos">
+        <div class="cloud-item">
+          <span class="cloud-icon">☁️</span>
+          <div>
+            <div>AWS EC2</div>
+            <div class="cloud-detail">Compute · S3 · Lambda · IAM</div>
+          </div>
+        </div>
+        <div class="cloud-item">
+          <span class="cloud-icon">🔷</span>
+          <div>
+            <div>Azure DevOps</div>
+            <div class="cloud-detail">Pipelines · Repos · Boards</div>
+          </div>
+        </div>
+        <div class="cloud-item">
+          <span class="cloud-icon">🐳</span>
+          <div>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <!-- PROJECTS -->
+    <div class="card c-7">
+      <div class="tag">// Projects</div>
+      <div class="section-title">Featured Work</div>
+      <div class="project-list">
+        <div class="project-item">
+          <div class="project-top">
+            <span class="project-name">Full-Stack Automation Engine</span>
+            <span class="project-stack">Python · Playwright · AWS</span>
+          </div>
+          <p class="project-desc">High-performance web automation system with real-time monitoring, cloud deployment on EC2, and interactive bento-style dashboard UI.</p>
+        </div>
+        <div class="project-item">
+          <div class="project-top">
+            <span class="project-name">Django API Orchestrator</span>
+            <span class="project-stack">Django · REST · PostgreSQL</span>
+          </div>
+          <p class="project-desc">Multi-tenant API management platform with rate limiting, authentication, and live endpoint monitoring built on Django REST Framework.</p>
+        </div>
+        <div class="project-item">
+          <div class="project-top">
+            <span class="project-name">Flask Microservice Gateway</span>
